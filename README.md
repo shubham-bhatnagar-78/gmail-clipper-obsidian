@@ -1,42 +1,96 @@
+<div align="center">
+
 # Gmail Clipper for Obsidian
 
-A Chrome extension that clips Gmail emails to your Obsidian vault in rich Markdown format — preserving formatting, images, links, attachments, and thread structure.
+**Clip Gmail emails to Obsidian in rich Markdown — images, formatting, threads, and all.**
 
-Built as a Gmail-specific alternative to the [official Obsidian Web Clipper](https://github.com/obsidianmd/obsidian-clipper), which uses generic article extraction that doesn't work well with email content.
+The missing bridge between your inbox and your second brain.
 
-![Chrome](https://img.shields.io/badge/Chrome-Manifest_V3-blue)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue)
-![License](https://img.shields.io/badge/License-MIT-green)
+[![Chrome Manifest V3](https://img.shields.io/badge/Chrome-Manifest_V3-4285F4?logo=googlechrome&logoColor=white)](https://developer.chrome.com/docs/extensions/mv3/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Webpack](https://img.shields.io/badge/Webpack-5-8DD6F9?logo=webpack&logoColor=black)](https://webpack.js.org/)
+[![Obsidian](https://img.shields.io/badge/Obsidian-Compatible-7C3AED?logo=obsidian&logoColor=white)](https://obsidian.md/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-## Why This Exists
+<br>
 
-The official Obsidian Web Clipper uses Readability (article extraction) which strips Gmail's email UI instead of extracting the email body. Existing Gmail-to-Obsidian tools only export plain text. This extension preserves the full rich content.
+[**Install**](#installation) · [**Features**](#features) · [**Comparison**](#how-it-compares) · [**Configuration**](#configuration) · [**Contributing**](#contributing)
 
-## Feature Comparison
+</div>
 
-| Feature | **This Extension** | [Official Clipper](https://github.com/obsidianmd/obsidian-clipper) | [Gmail → Obsidian](https://chromewebstore.google.com/detail/fblpacadkfaknlojnnkpmkdpledkjgaf) | [Gmail2Obsidian](https://github.com/Emaj7th/Gmail2Obsidian) | [obsidian-google-mail](https://github.com/anicholson/obsidian-google-mail) |
-|---------|:---:|:---:|:---:|:---:|:---:|
-| Rich formatting (bold, italic, etc) | ✅ | ⚠️ Generic — breaks on email | ❌ Plain text | ❌ Plain text | ⚠️ Partial |
-| Images preserved | ✅ + alt text fallback | ❌ Stripped by Readability | ❌ | ❌ | ❌ |
-| Tables | ✅ Layout collapsed, data preserved | ❌ Breaks on email tables | ❌ | ❌ | ⚠️ "May seem weird" |
-| Tracking URL unwrapping | ✅ AWS, Google, generic | ❌ | ❌ | ❌ | ❌ |
-| Attachments listed | ✅ Filenames + sizes | ❌ | ❌ | ❌ | ❌ |
-| Thread-aware | ✅ Per-message headers | ❌ Flattens | ⚠️ Expanded only | ⚠️ Expanded only | ⚠️ Label-based |
-| Gmail quotes | ✅ Obsidian collapsible callouts | ❌ Stripped | ❌ Flat text | ❌ Flat text | ❌ |
-| YAML frontmatter | ✅ Full (from, to, cc, date, labels, attachments) | ⚠️ Generic (title, source) | ❌ None | ⚠️ Basic (title, from, date) | ⚠️ Labels only |
-| Configurable properties | ✅ Add/remove/reorder | ✅ Template system | ❌ | ❌ | ❌ |
-| Template variables | ✅ 13 variables | ✅ Many (general web) | ❌ | ❌ | ❌ |
-| Delivery methods | ✅ URI + clipboard + .md download | ✅ URI + clipboard | ⚠️ Clipboard → URI | ⚠️ Clipboard → URI | ✅ Direct to vault |
-| Tracking pixel removal | ✅ 1x1 image filtering | ❌ | ❌ | ❌ | ❌ |
-| Highlighted text → `==text==` | ✅ Obsidian syntax | ✅ | ❌ | ❌ | ❌ |
-| Needs OAuth / API key | ❌ None | ❌ None | ❌ None | ❌ None | ⚠️ Yes (Google Cloud) |
-| Works on existing tabs | ✅ Auto-injects | ✅ | ✅ | ✅ | N/A (plugin) |
-| Gmail-specific optimization | ✅ | ❌ Generic for all sites | ✅ | ✅ | ✅ |
-| Platform | Chrome | Chrome/Firefox/Safari | Chrome | Chrome | Obsidian plugin |
+---
+
+## The Problem
+
+You want to save important emails to Obsidian. But:
+
+- **Official Obsidian Web Clipper** uses Readability (article extraction) — treats Gmail as a webpage, strips the email body, breaks tables, loses images
+- **Gmail2Obsidian** and **Gmail → Obsidian** export plain text only — no bold, no images, no tables, no links
+- **obsidian-google-mail** requires OAuth + Google Cloud Console setup and its own README says *"some emails may seem weird"*
+
+None of them preserve what makes an email an email.
+
+## The Solution
+
+Gmail Clipper extracts email content directly from Gmail's DOM with 10+ custom Turndown rules built specifically for email HTML. Layout tables get collapsed (not converted to broken GFM tables). Tracking URLs get unwrapped. Images get preserved. Gmail quotes become collapsible Obsidian callouts.
+
+**Zero OAuth. Zero API keys. Just install and clip.**
+
+## Features
+
+- **Rich Markdown** — Bold, italic, strikethrough, highlights (`==text==`), code blocks, headings
+- **Images** — Preserved with alt text fallback from filename. Tracking pixels auto-removed
+- **Links** — Tracking URL unwrapping for AWS SES, Google, Mailchimp, and generic redirects
+- **Tables** — Email layout tables collapsed to content; actual data tables kept as GFM
+- **Attachments** — Listed as Obsidian `> [!paperclip]` callouts with filenames and sizes
+- **Threads** — Each message gets its own `> [!email]` callout with sender, recipients, and timestamp
+- **Gmail Quotes** — Collapsed into `> [!quote]` callouts (not stripped, not flattened)
+- **YAML Frontmatter** — Configurable properties: from, to, cc, date, subject, labels, attachments
+- **13 Template Variables** — `{{subject}}`, `{{from}}`, `{{date}}`, `{{labels}}`, and more
+- **3 Delivery Methods** — Obsidian URI (direct), clipboard, or `.md` file download
+- **Keyboard Shortcut** — `Cmd+Shift+E` (Mac) / `Ctrl+Shift+E` (Windows)
+- **Dark UI** — Matches Obsidian's aesthetic, mirrors official Web Clipper layout
+
+---
+
+## How It Compares
+
+### Content Quality
+
+| What gets preserved | Gmail Clipper | Official Clipper | Gmail→Obsidian | Gmail2Obsidian | obsidian-google-mail |
+|:---|:---:|:---:|:---:|:---:|:---:|
+| **Bold, italic, formatting** | ✅ Full | ⚠️ Breaks on email | ❌ | ❌ | ⚠️ |
+| **Images** | ✅ + alt fallback | ❌ Stripped | ❌ | ❌ | ❌ |
+| **Email tables** | ✅ Smart handling | ❌ Broken | ❌ | ❌ | ⚠️ |
+| **Links** | ✅ Unwrapped | ⚠️ Raw | ❌ | ❌ | ❌ |
+| **Attachments** | ✅ Listed | ❌ | ❌ | ❌ | ❌ |
+| **Highlighted text** | ✅ `==text==` | ✅ | ❌ | ❌ | ❌ |
+| **Tracking pixel removal** | ✅ | ❌ | ❌ | ❌ | ❌ |
+
+### Email-Specific Features
+
+| Feature | Gmail Clipper | Official Clipper | Gmail→Obsidian | Gmail2Obsidian | obsidian-google-mail |
+|:---|:---:|:---:|:---:|:---:|:---:|
+| **Thread structure** | ✅ Per-message | ❌ Flattened | ⚠️ Expanded only | ⚠️ Expanded only | ⚠️ Label-based |
+| **Gmail quotes** | ✅ Collapsible | ❌ Stripped | ❌ Flat | ❌ Flat | ❌ |
+| **Tracking URL unwrap** | ✅ AWS/Google/generic | ❌ | ❌ | ❌ | ❌ |
+| **YAML frontmatter** | ✅ Full email metadata | ⚠️ Generic web | ❌ | ⚠️ Basic | ⚠️ Labels only |
+| **Configurable properties** | ✅ | ✅ | ❌ | ❌ | ❌ |
+
+### Setup & Compatibility
+
+| | Gmail Clipper | Official Clipper | Gmail→Obsidian | Gmail2Obsidian | obsidian-google-mail |
+|:---|:---:|:---:|:---:|:---:|:---:|
+| **Needs OAuth** | ❌ | ❌ | ❌ | ❌ | ✅ Google Cloud |
+| **Needs API key** | ❌ | ❌ | ❌ | ❌ | ✅ |
+| **Gmail-optimized** | ✅ | ❌ Generic | ✅ | ✅ | ✅ |
+| **Delivery options** | 3 methods | 2 methods | 1 method | 1 method | Direct |
+| **Type** | Chrome ext | Multi-browser ext | Chrome ext | Chrome ext | Obsidian plugin |
+
+---
 
 ## Installation
-
-### From Source
 
 ```bash
 git clone https://github.com/shubham-bhatnagar-78/gmail-clipper-obsidian.git
@@ -49,134 +103,203 @@ Then load in Chrome:
 
 1. Open `chrome://extensions`
 2. Enable **Developer mode** (top right)
-3. Click **Load unpacked**
-4. Select the `dist/` folder
+3. Click **Load unpacked** → select the `dist/` folder
 
 ### First Run
 
 1. Click the extension icon on any Gmail page
 2. Enter your Obsidian **vault name** (must match exactly)
 3. Set a folder path (default: `Emails`)
-4. Open an email and click the extension icon to clip
+4. Open an email → click the extension icon → **Add to Obsidian**
+
+---
 
 ## Usage
 
-1. Open any email in Gmail
-2. Click the extension icon or press `Cmd+Shift+E` (Mac) / `Ctrl+Shift+E` (Windows)
-3. Review the note name, properties, and content preview
-4. Click **Add to Obsidian**
+1. **Open** any email in Gmail
+2. **Click** the extension icon or press `Cmd+Shift+E` / `Ctrl+Shift+E`
+3. **Review** the note name, properties, and content preview
+4. **Click** "Add to Obsidian" (or use the dropdown for clipboard / .md download)
 
 ### Delivery Methods
 
-- **Obsidian URI** (default) — Opens Obsidian directly and creates the note
-- **Copy to clipboard** — Copies markdown, paste manually into Obsidian
-- **Download .md file** — Downloads a `.md` file you can move to your vault
+| Method | How it works |
+|--------|-------------|
+| **Obsidian URI** *(default)* | Copies markdown to clipboard, opens `obsidian://new` — note appears in your vault |
+| **Clipboard** | Copies markdown to clipboard for manual paste |
+| **File download** | Downloads a `.md` file you can move to your vault folder |
 
-Use the dropdown arrow on the "Add to Obsidian" button to switch methods.
+---
 
 ## Output Format
 
+### Single Email
+
 ```markdown
 ---
-clipped: 2026-06-03
+clipped: 2024-01-15
 type: email
 source: gmail
-from: Jane Smith <sender@example.com>
+from: Alice Johnson <alice@example.com>
 to:
-  - "you@example.com"
-date: Jun 3, 2026, 10:00 AM
-subject: Day 1 of 21 The Easiest Online Store You'll Ever Build
+  - "bob@example.com"
+date: Jan 15, 2024, 9:30 AM
+subject: Weekly Project Update
 labels:
-  - "Newsletters"
+  - "Work"
+  - "Projects"
+attachments:
+  - "report-q4.pdf"
+  - "slides.pptx"
 ---
 
-Hi there,
+Hi Bob,
 
-Today we're doing something that's fundamental but extremely important: **setting up your store.**
+Here's the weekly update on **Project Atlas**:
 
-Here's the good news — you don't need a fancy custom website...
+### Progress
 
-People inside of this challenge are finally getting over the hump of starting their store by [using Stan](https://example.com/newsletter)...
+- Completed the migration to the new API
+- Performance improved by [40% across all endpoints](https://dashboard.example.com/metrics)
+- Design review scheduled for Thursday
 
-![image9](https://example.com/assets/.../image9.png)
+![architecture-diagram](https://example.com/images/architecture-v2.png)
 
-### The Only Things That Matter
+### Next Steps
 
-When it comes to setting up your store...
+1. Finalize the ==database schema changes==
+2. Run load tests on staging
+3. Update documentation
+
+Let me know if you have questions.
+
+Best,
+Alice
+
+> [!paperclip] Attachments
+> - report-q4.pdf *(2.4 MB)*
+> - slides.pptx *(1.1 MB)*
+```
+
+### Thread (Multiple Messages)
+
+```markdown
+---
+clipped: 2024-01-15
+type: email
+source: gmail
+from: Alice Johnson <alice@example.com>
+to:
+  - "team@example.com"
+date: Jan 15, 2024, 9:30 AM
+subject: Re: Launch Timeline
+labels:
+  - "Work"
+---
+
+> [!email] **Alice Johnson** `alice@example.com` — Jan 15, 2024, 9:30 AM
+> **To:** **Team** `team@example.com`
+
+Sounds good — let's target Friday for the soft launch.
+
+I'll prepare the rollback plan tonight.
+
+---
+
+> [!email] **Bob Chen** `bob@example.com` — Jan 15, 2024, 8:45 AM
+> **To:** **Team** `team@example.com`
+
+All tests passing on staging. Green light from QA.
+
+> [!quote]- Quoted text
+> Can we move the launch to this week?
+> We're ahead of schedule.
 ```
 
 ### What Gets Preserved
 
-- **Bold**, *italic*, ~~strikethrough~~, ==highlights==, `code`
-- Links with tracking URL unwrapping (AWS, Google, generic redirects)
-- Images with alt text fallback from filename
-- Tables (layout tables collapsed, data tables as GFM)
-- Blockquotes → Obsidian `> [!quote]` callouts
-- Gmail quoted replies → collapsible callouts
-- Attachments → `> [!paperclip]` callout with filenames
-- Thread messages → `> [!email]` callouts with sender/date
+| Element | Markdown Output |
+|---------|----------------|
+| Bold / italic | `**bold**` / `*italic*` |
+| Strikethrough | `~~text~~` |
+| Highlights | `==highlighted==` |
+| Links | `[text](unwrapped-url)` |
+| Images | `![alt-from-filename](url)` |
+| Code | `` `inline` `` and fenced blocks |
+| Blockquotes | `> quoted text` |
+| Gmail quotes | `> [!quote]- Quoted text` (collapsible) |
+| Attachments | `> [!paperclip]` callout |
+| Thread messages | `> [!email]` callout with metadata |
+| Layout tables | Collapsed to content |
+| Data tables | GFM table syntax |
+
+---
 
 ## Configuration
 
-Open extension settings (`chrome://extensions` → Gmail Clipper → Details → Extension options):
+Open settings via the gear icon in the popup, or `chrome://extensions` → Gmail Clipper → Extension options.
+
+### General Settings
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| Vault name | *(required)* | Your Obsidian vault name |
-| Folder path | `Emails` | Where clipped notes are saved |
+| Vault name | *(required)* | Must match your Obsidian vault name exactly |
+| Folder path | `Emails` | Subfolder in vault for clipped emails |
 | Filename template | `{{subject}}` | Note naming pattern |
-| Date format | `YYYY-MM-DD HH:mm` | Date display format |
-| Delivery method | Obsidian URI | How to send to Obsidian |
-| Include attachments | Yes | List attachments in the note |
-| Image handling | Keep as links | How to handle inline images |
-| Thread separator | `---` | Separator between thread messages |
+| Date format | `YYYY-MM-DD HH:mm` | Timestamp format in frontmatter |
+| Delivery method | Obsidian URI | How notes reach your vault |
+| Include attachments | Yes | Show attachment list in the note |
+| Image handling | Keep as links | How inline images are handled |
+| Thread separator | `---` | Divider between thread messages |
 
 ### Template Variables
 
-Use in filename template and property values:
+Use these in filename templates and property values:
 
-| Variable | Value |
-|----------|-------|
-| `{{subject}}` | Email subject line |
-| `{{from}}` | Sender name and email |
-| `{{from_name}}` | Sender name only |
-| `{{from_email}}` | Sender email only |
-| `{{to}}` | Recipients |
-| `{{cc}}` | CC recipients |
-| `{{date}}` | Email date |
-| `{{date_iso}}` | ISO 8601 date |
-| `{{labels}}` | Gmail labels |
-| `{{participants}}` | All thread participants |
-| `{{message_count}}` | Number of messages in thread |
-| `{{url}}` | Gmail URL |
+| Variable | Example Output |
+|----------|---------------|
+| `{{subject}}` | Weekly Project Update |
+| `{{from}}` | Alice Johnson \<alice@example.com\> |
+| `{{from_name}}` | Alice Johnson |
+| `{{from_email}}` | alice@example.com |
+| `{{to}}` | bob@example.com |
+| `{{cc}}` | carol@example.com |
+| `{{date}}` | Jan 15, 2024, 9:30 AM |
+| `{{date_iso}}` | 2024-01-15T09:30:00.000Z |
+| `{{labels}}` | Work, Projects |
+| `{{participants}}` | Alice, Bob, Carol |
+| `{{message_count}}` | 3 |
+| `{{url}}` | https://mail.google.com/mail/u/0/#inbox/... |
+
+---
 
 ## Development
 
 ```bash
-npm run dev       # Watch mode (rebuilds on changes)
-npm run build     # Production build
-npm run build:dev # Development build
-npm run lint      # TypeScript type check
+npm run dev       # Watch mode — rebuilds on file changes
+npm run build     # Production build (minified)
+npm run build:dev # Development build (source maps)
+npm run lint      # TypeScript type checking
 ```
 
-### Project Structure
+### Architecture
 
 ```
 src/
-├── content.ts                # Gmail DOM extraction (injected into Gmail)
-├── background.ts             # Service worker (script injection, downloads)
+├── content.ts                # Injected into Gmail — extracts email DOM
+├── background.ts             # Service worker — script injection, file downloads
 ├── core/
-│   ├── popup.ts              # Extension popup UI
-│   └── settings.ts           # Settings page
+│   ├── popup.ts              # Extension popup UI (mirrors official clipper layout)
+│   └── settings.ts           # Settings page logic
 ├── utils/
-│   ├── gmail-extractor.ts    # Email extraction with multi-fallback selectors
-│   ├── gmail-selectors.ts    # Gmail DOM selector candidates
-│   ├── markdown-converter.ts # Turndown + custom email conversion rules
-│   ├── obsidian-delivery.ts  # Obsidian URI / clipboard / download delivery
-│   └── storage.ts            # Chrome storage for settings
+│   ├── gmail-extractor.ts    # Multi-fallback DOM extraction engine
+│   ├── gmail-selectors.ts    # Gmail selector candidates (resilient to class name changes)
+│   ├── markdown-converter.ts # Turndown + 10 custom rules for email HTML
+│   ├── obsidian-delivery.ts  # 3-tier delivery: URI → clipboard → file download
+│   └── storage.ts            # Chrome storage abstraction
 ├── styles/
-│   ├── popup.scss            # Popup styling (matches Obsidian theme)
-│   └── settings.scss         # Settings page styling
+│   ├── popup.scss            # Dark theme matching Obsidian
+│   └── settings.scss         # Settings page styles
 ├── types/
 │   └── email.ts              # TypeScript interfaces
 ├── manifest.json             # Chrome Manifest V3
@@ -186,19 +309,68 @@ src/
 
 ### Tech Stack
 
-- **TypeScript** + **Webpack** — Build system
-- **Turndown** + **turndown-plugin-gfm** — HTML to Markdown conversion
-- **DOMPurify** — HTML sanitization
-- **dayjs** — Date formatting
-- **webextension-polyfill** — Cross-browser compatibility
+| Technology | Purpose |
+|-----------|---------|
+| [TypeScript](https://www.typescriptlang.org/) | Type-safe development |
+| [Webpack 5](https://webpack.js.org/) | Bundling and build |
+| [Turndown](https://github.com/mixmark-io/turndown) | HTML → Markdown conversion |
+| [turndown-plugin-gfm](https://github.com/mixmark-io/turndown-plugin-gfm) | GFM tables and strikethrough |
+| [DOMPurify](https://github.com/cure53/DOMPurify) | HTML sanitization |
+| [dayjs](https://day.js.org/) | Date formatting |
+| [webextension-polyfill](https://github.com/nicolo-ribaudo/webextension-polyfill) | Cross-browser API compatibility |
+
+### How Extraction Works
+
+1. **Content script** injects into Gmail and listens for extraction requests
+2. **Multi-fallback selectors** try 5-8 CSS selector candidates per element (Gmail obfuscates class names)
+3. **DOMPurify** sanitizes extracted HTML — whitelisted tags and attributes only
+4. **Turndown** converts sanitized HTML to Markdown with custom rules:
+   - Layout tables → collapsed to content (emails use `<table>` for layout)
+   - Tracking URLs → unwrapped to real destinations
+   - Tracking pixels → filtered (1x1 images)
+   - Styled spans → Markdown formatting (`**bold**`, `*italic*`, `==highlight==`)
+   - Gmail quotes → Obsidian collapsible callouts
+   - Empty headings and orphan UI text → stripped
+5. **YAML frontmatter** built from configurable property templates
+6. **Delivery** via `obsidian://new` URI, clipboard, or `.md` file download
+
+---
 
 ## Known Limitations
 
-- Gmail uses obfuscated CSS class names that may change between versions. The extension uses multiple fallback selectors, but a Gmail update could temporarily break extraction.
-- Inline images are kept as external URLs (not downloaded to vault). Gmail proxies images through `googleusercontent.com`.
-- The extension only works on `mail.google.com` — not the Gmail mobile app or desktop clients.
-- Content scripts need to be re-injected after extension updates (refresh the Gmail tab).
+- **Gmail class names change** — Gmail uses obfuscated CSS selectors that may change between updates. The extension uses multi-fallback selector candidates to stay resilient, but a major Gmail redesign could temporarily break extraction.
+- **Images stay as URLs** — Inline images are kept as external links (not downloaded into vault). Gmail proxies most images through `googleusercontent.com`.
+- **Chrome only** — Currently built for Chrome / Chromium browsers. Firefox and Safari support is possible with minor manifest changes.
+- **Requires page refresh after updates** — Content scripts need to be re-injected after extension updates. Just refresh the Gmail tab.
+
+---
+
+## Contributing
+
+Contributions welcome! Whether it's bug fixes, new features, or improved Gmail selector coverage.
+
+```bash
+# Fork and clone
+git clone https://github.com/YOUR_USERNAME/gmail-clipper-obsidian.git
+cd gmail-clipper-obsidian
+npm install
+npm run dev  # Start development with watch mode
+```
+
+If Gmail changes their DOM and extraction breaks, the fix is usually in `src/utils/gmail-selectors.ts` — add the new selector as a candidate and it'll be tried automatically.
+
+---
 
 ## License
 
-MIT
+[MIT](LICENSE) — use it, fork it, ship it.
+
+---
+
+<div align="center">
+
+**If this extension saves you time, consider giving it a ⭐**
+
+Built for the [Obsidian](https://obsidian.md/) community.
+
+</div>
