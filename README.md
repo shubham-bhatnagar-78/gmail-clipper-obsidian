@@ -10,18 +10,29 @@ Built as a Gmail-specific alternative to the [official Obsidian Web Clipper](htt
 
 ## Why This Exists
 
-The official Obsidian Web Clipper uses Readability (article extraction) which strips Gmail's email UI instead of extracting the email body. Existing Gmail-to-Obsidian tools only export plain text. This extension preserves the full rich content:
+The official Obsidian Web Clipper uses Readability (article extraction) which strips Gmail's email UI instead of extracting the email body. Existing Gmail-to-Obsidian tools only export plain text. This extension preserves the full rich content.
 
-| Feature | Official Clipper | Gmail2Obsidian | This Extension |
-|---------|-----------------|----------------|----------------|
-| Rich formatting | Generic extraction | Plain text | Full email HTML → Markdown |
-| Images | Stripped | Skipped | Preserved with alt text |
-| Tables | Broken | Skipped | Layout tables collapsed, data tables preserved |
-| Links | May break | Plain text | Tracking URLs unwrapped to real destinations |
-| Attachments | No | No | Listed with filenames and sizes |
-| Thread structure | No | Flat | Each message separated with sender/date headers |
-| Gmail quotes | Stripped | Flat | Obsidian collapsible callouts |
-| Frontmatter | Generic | Basic | Configurable YAML (from, to, date, subject, labels) |
+## Feature Comparison
+
+| Feature | **This Extension** | [Official Clipper](https://github.com/obsidianmd/obsidian-clipper) | [Gmail → Obsidian](https://chromewebstore.google.com/detail/fblpacadkfaknlojnnkpmkdpledkjgaf) | [Gmail2Obsidian](https://github.com/Emaj7th/Gmail2Obsidian) | [obsidian-google-mail](https://github.com/anicholson/obsidian-google-mail) |
+|---------|:---:|:---:|:---:|:---:|:---:|
+| Rich formatting (bold, italic, etc) | ✅ | ⚠️ Generic — breaks on email | ❌ Plain text | ❌ Plain text | ⚠️ Partial |
+| Images preserved | ✅ + alt text fallback | ❌ Stripped by Readability | ❌ | ❌ | ❌ |
+| Tables | ✅ Layout collapsed, data preserved | ❌ Breaks on email tables | ❌ | ❌ | ⚠️ "May seem weird" |
+| Tracking URL unwrapping | ✅ AWS, Google, generic | ❌ | ❌ | ❌ | ❌ |
+| Attachments listed | ✅ Filenames + sizes | ❌ | ❌ | ❌ | ❌ |
+| Thread-aware | ✅ Per-message headers | ❌ Flattens | ⚠️ Expanded only | ⚠️ Expanded only | ⚠️ Label-based |
+| Gmail quotes | ✅ Obsidian collapsible callouts | ❌ Stripped | ❌ Flat text | ❌ Flat text | ❌ |
+| YAML frontmatter | ✅ Full (from, to, cc, date, labels, attachments) | ⚠️ Generic (title, source) | ❌ None | ⚠️ Basic (title, from, date) | ⚠️ Labels only |
+| Configurable properties | ✅ Add/remove/reorder | ✅ Template system | ❌ | ❌ | ❌ |
+| Template variables | ✅ 13 variables | ✅ Many (general web) | ❌ | ❌ | ❌ |
+| Delivery methods | ✅ URI + clipboard + .md download | ✅ URI + clipboard | ⚠️ Clipboard → URI | ⚠️ Clipboard → URI | ✅ Direct to vault |
+| Tracking pixel removal | ✅ 1x1 image filtering | ❌ | ❌ | ❌ | ❌ |
+| Highlighted text → `==text==` | ✅ Obsidian syntax | ✅ | ❌ | ❌ | ❌ |
+| Needs OAuth / API key | ❌ None | ❌ None | ❌ None | ❌ None | ⚠️ Yes (Google Cloud) |
+| Works on existing tabs | ✅ Auto-injects | ✅ | ✅ | ✅ | N/A (plugin) |
+| Gmail-specific optimization | ✅ | ❌ Generic for all sites | ✅ | ✅ | ✅ |
+| Platform | Chrome | Chrome/Firefox/Safari | Chrome | Chrome | Obsidian plugin |
 
 ## Installation
 
