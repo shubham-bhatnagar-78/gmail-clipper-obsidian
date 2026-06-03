@@ -23,13 +23,13 @@ The missing bridge between your inbox and your second brain.
 
 ## The Problem
 
-You want to save important emails to Obsidian. But:
+You want to save important emails to Obsidian. But nothing works properly:
 
-- **Official Obsidian Web Clipper** uses Readability (article extraction) — treats Gmail as a webpage, strips the email body, breaks tables, loses images
-- **Gmail2Obsidian** and **Gmail → Obsidian** export plain text only — no bold, no images, no tables, no links
-- **obsidian-google-mail** requires OAuth + Google Cloud Console setup and its own README says *"some emails may seem weird"*
+- **Official Obsidian Web Clipper** — **does not work on Gmail.** It uses Readability (designed for articles), which cannot parse Gmail's dynamic SPA interface. On Gmail, it either captures the entire inbox UI, returns garbage, or fails to extract any content at all. It was never built for email.
+- **Gmail2Obsidian** and **Gmail → Obsidian** — export plain text only. No bold, no images, no tables, no links. Formatting is completely lost.
+- **obsidian-google-mail** — requires OAuth + Google Cloud Console setup, and its own README warns *"some emails may seem weird."*
 
-None of them preserve what makes an email an email.
+There is no good way to get a properly formatted email from Gmail into Obsidian. Until now.
 
 ## The Solution
 
@@ -58,35 +58,38 @@ Gmail Clipper extracts email content directly from Gmail's DOM with 10+ custom T
 
 ### Content Quality
 
+> **Note:** The Official Obsidian Web Clipper does not properly support Gmail. Gmail is a single-page application with dynamically rendered content — Readability-based extraction either captures the inbox chrome, returns broken output, or extracts nothing. All "Official Clipper" ratings below reflect this fundamental incompatibility.
+
 | What gets preserved | Gmail Clipper | Official Clipper | Gmail→Obsidian | Gmail2Obsidian | obsidian-google-mail |
 |:---|:---:|:---:|:---:|:---:|:---:|
-| **Bold, italic, formatting** | ✅ Full | ⚠️ Breaks on email | ❌ | ❌ | ⚠️ |
-| **Images** | ✅ + alt fallback | ❌ Stripped | ❌ | ❌ | ❌ |
-| **Email tables** | ✅ Smart handling | ❌ Broken | ❌ | ❌ | ⚠️ |
-| **Links** | ✅ Unwrapped | ⚠️ Raw | ❌ | ❌ | ❌ |
+| **Works on Gmail** | ✅ | ❌ Not designed for email | ✅ | ✅ | ✅ |
+| **Bold, italic, formatting** | ✅ Full | ❌ Fails to extract | ❌ Plain text | ❌ Plain text | ⚠️ Partial |
+| **Images** | ✅ + alt fallback | ❌ | ❌ | ❌ | ❌ |
+| **Email tables** | ✅ Smart handling | ❌ | ❌ | ❌ | ⚠️ "May seem weird" |
+| **Links** | ✅ Unwrapped | ❌ | ❌ | ❌ | ❌ |
 | **Attachments** | ✅ Listed | ❌ | ❌ | ❌ | ❌ |
-| **Highlighted text** | ✅ `==text==` | ✅ | ❌ | ❌ | ❌ |
+| **Highlighted text** | ✅ `==text==` | ❌ | ❌ | ❌ | ❌ |
 | **Tracking pixel removal** | ✅ | ❌ | ❌ | ❌ | ❌ |
 
 ### Email-Specific Features
 
 | Feature | Gmail Clipper | Official Clipper | Gmail→Obsidian | Gmail2Obsidian | obsidian-google-mail |
 |:---|:---:|:---:|:---:|:---:|:---:|
-| **Thread structure** | ✅ Per-message | ❌ Flattened | ⚠️ Expanded only | ⚠️ Expanded only | ⚠️ Label-based |
-| **Gmail quotes** | ✅ Collapsible | ❌ Stripped | ❌ Flat | ❌ Flat | ❌ |
-| **Tracking URL unwrap** | ✅ AWS/Google/generic | ❌ | ❌ | ❌ | ❌ |
-| **YAML frontmatter** | ✅ Full email metadata | ⚠️ Generic web | ❌ | ⚠️ Basic | ⚠️ Labels only |
-| **Configurable properties** | ✅ | ✅ | ❌ | ❌ | ❌ |
+| **Thread structure** | ✅ Per-message | ❌ N/A | ⚠️ Expanded only | ⚠️ Expanded only | ⚠️ Label-based |
+| **Gmail quotes** | ✅ Collapsible callouts | ❌ N/A | ❌ Flat | ❌ Flat | ❌ |
+| **Tracking URL unwrap** | ✅ AWS/Google/generic | ❌ N/A | ❌ | ❌ | ❌ |
+| **YAML frontmatter** | ✅ Full email metadata | ❌ N/A | ❌ None | ⚠️ Basic | ⚠️ Labels only |
+| **Configurable properties** | ✅ | ❌ N/A | ❌ | ❌ | ❌ |
 
 ### Setup & Compatibility
 
 | | Gmail Clipper | Official Clipper | Gmail→Obsidian | Gmail2Obsidian | obsidian-google-mail |
 |:---|:---:|:---:|:---:|:---:|:---:|
+| **Works on Gmail** | ✅ Built for it | ❌ Not compatible | ✅ | ✅ | ✅ |
 | **Needs OAuth** | ❌ | ❌ | ❌ | ❌ | ✅ Google Cloud |
 | **Needs API key** | ❌ | ❌ | ❌ | ❌ | ✅ |
-| **Gmail-optimized** | ✅ | ❌ Generic | ✅ | ✅ | ✅ |
 | **Delivery options** | 3 methods | 2 methods | 1 method | 1 method | Direct |
-| **Type** | Chrome ext | Multi-browser ext | Chrome ext | Chrome ext | Obsidian plugin |
+| **Platform** | Chrome | Multi-browser | Chrome | Chrome | Obsidian plugin |
 
 ---
 
@@ -333,6 +336,20 @@ src/
    - Empty headings and orphan UI text → stripped
 5. **YAML frontmatter** built from configurable property templates
 6. **Delivery** via `obsidian://new` URI, clipboard, or `.md` file download
+
+---
+
+## Roadmap
+
+- [ ] **Chrome Web Store release** — Publish for one-click install
+- [ ] **Firefox support** — Manifest + polyfill adjustments
+- [ ] **Download images to vault** — Save inline images as local files
+- [ ] **Batch clip** — Clip multiple selected emails at once
+- [ ] **Custom templates** — Multiple save formats (meeting notes, newsletter, receipt)
+- [ ] **Obsidian plugin companion** — Two-way sync with Gmail labels
+- [ ] **Search & clip** — Search Gmail from the extension and clip results
+
+Have an idea? [Open an issue](https://github.com/shubham-bhatnagar-78/gmail-clipper-obsidian/issues).
 
 ---
 
