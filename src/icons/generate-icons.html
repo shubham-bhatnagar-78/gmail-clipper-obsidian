@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head><title>Icon Generator</title></head>
+<body>
+<canvas id="c"></canvas>
+<script>
+// Open this file in a browser, right-click each canvas to save as PNG
+// Or use any icon generator — these are just placeholders
+[16, 48, 128].forEach(size => {
+  const c = document.createElement('canvas');
+  c.width = size;
+  c.height = size;
+  const ctx = c.getContext('2d');
+
+  // Purple circle background
+  ctx.fillStyle = '#7c3aed';
+  ctx.beginPath();
+  ctx.arc(size/2, size/2, size/2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // White envelope icon
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = size * 0.06;
+  ctx.fillStyle = 'transparent';
+  const m = size * 0.25;
+  ctx.beginPath();
+  ctx.rect(m, m * 1.2, size - m*2, (size - m*2) * 0.7);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(m, m * 1.2);
+  ctx.lineTo(size/2, size * 0.55);
+  ctx.lineTo(size - m, m * 1.2);
+  ctx.stroke();
+
+  document.body.appendChild(c);
+  const p = document.createElement('p');
+  p.textContent = `${size}x${size} — Right-click > Save Image As > icon${size}.png`;
+  document.body.appendChild(p);
+});
+</script>
+</body>
+</html>
